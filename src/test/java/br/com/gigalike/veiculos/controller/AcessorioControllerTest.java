@@ -2,6 +2,7 @@ package br.com.gigalike.veiculos.controller;
 import br.com.gigalike.veiculos.dto.AcessorioDto;
 import br.com.gigalike.veiculos.exception.FipewalException400BadRequest;
 import br.com.gigalike.veiculos.service.AcessorioService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,20 +19,22 @@ public class AcessorioControllerTest {
     private MockMvc mockMvc;
     @MockitoBean
     private AcessorioService acessorioService;
+    private static final String endPointRaiz = "/acessorio/";
 
     @Test
+    @DisplayName("Deve retornar o acessório quando buscar por ID existente")
     void deveRetornarUmAcessorioBuscadoPeloId() throws Exception {
         //ARRANGE
         AcessorioDto acessorioDto = new AcessorioDto(1L,"ar condicionado","descrição 1",550.50);
         when(acessorioService.buscarDtoPorId(1L)).thenReturn(acessorioDto);
+        long idValido = 1L;
         //ACT+ASSERT
-        mockMvc.perform(get("/acessorio/1").contentType("application/json"))
+        mockMvc.perform(get(endPointRaiz+idValido).contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.nome").value("ar condicionado"))
                 .andExpect(jsonPath("$.descricao").value("descrição 1"))
                 .andExpect(jsonPath("$.preco").value(550.50));
-
     }
 
     @Test
@@ -39,7 +42,7 @@ public class AcessorioControllerTest {
         long idInexistente = 0L;
         when(acessorioService.buscarDtoPorId(idInexistente)).
                 thenThrow(new FipewalException400BadRequest("Acessório não encontrado com ID: " + idInexistente));
-        mockMvc.perform(get("/acessorio/"+idInexistente).contentType("application/json"))
+        mockMvc.perform(get(endPointRaiz+idInexistente).contentType("application/json"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Acessório não encontrado com ID: " + idInexistente));
     }
