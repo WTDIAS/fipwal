@@ -1,6 +1,7 @@
 package br.com.gigalike.veiculos.service;
 import br.com.gigalike.veiculos.dto.AcessorioDto;
-import br.com.gigalike.veiculos.exception.FipewalException;
+import br.com.gigalike.veiculos.exception.FipewalException400BadRequest;
+import br.com.gigalike.veiculos.exception.FipewalException500InternalServerError;
 import br.com.gigalike.veiculos.mapper.AcessorioMapper;
 import br.com.gigalike.veiculos.model.Acessorio;
 import br.com.gigalike.veiculos.repository.AcessorioRepository;
@@ -19,7 +20,7 @@ public class AcessorioService {
     AcessorioMapper acessorioMapper;
 
     public AcessorioDto buscarDtoPorId(long id){
-        Acessorio acessorio = acessorioRepository.findById(id).orElseThrow(()-> new FipewalException("Acessório não encontrado com ID: " + id));
+        Acessorio acessorio = acessorioRepository.findById(id).orElseThrow(()-> new FipewalException500InternalServerError("Acessório não encontrado com ID: " + id));
         return acessorioMapper.toDto(acessorio);
     }
 
@@ -30,17 +31,17 @@ public class AcessorioService {
     }
 
 
-    public List<AcessorioDto> buscar10() {
+    public List<AcessorioDto> buscarAcessorios() {
         List<Acessorio> acessorioList = acessorioRepository.findTop10By();
         if (acessorioList.isEmpty()){
-            throw new FipewalException("Nenhum acessório encontrado.");
+            throw new FipewalException500InternalServerError("Nenhum acessório encontrado.");
         }
         return acessorioMapper.listToDto(acessorioList);
     }
 
     public void deletaAcessorio(long id) {
         if (!acessorioRepository.existsById(id)){
-            throw new FipewalException("Acessório não encontrado para exclusão.");
+            throw new FipewalException400BadRequest("Acessório não encontrado para exclusão.");
         }
         acessorioRepository.deleteById(id);
     }

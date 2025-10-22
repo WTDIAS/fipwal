@@ -1,6 +1,7 @@
 package br.com.gigalike.veiculos.service;
 import br.com.gigalike.veiculos.dto.VeiculoDto;
-import br.com.gigalike.veiculos.exception.FipewalException;
+import br.com.gigalike.veiculos.exception.FipewalException400BadRequest;
+import br.com.gigalike.veiculos.exception.FipewalException500InternalServerError;
 import br.com.gigalike.veiculos.mapper.VeiculoMapper;
 import br.com.gigalike.veiculos.model.*;
 import br.com.gigalike.veiculos.repository.AcessorioRepository;
@@ -27,21 +28,21 @@ public class VeiculoService {
 
 
     public VeiculoDto buscaPorId(long id) {
-        Veiculo veiculo = veiculoRepository.findById(id).orElseThrow(() -> new FipewalException("Veiculo não encontrado!"));
+        Veiculo veiculo = veiculoRepository.findById(id).orElseThrow(() -> new FipewalException500InternalServerError("Veiculo não encontrado!"));
         return veiculoMapper.toDto(veiculo);
     }
 
     public List<VeiculoDto> buscarVeiculos() {
         List<Veiculo> veiculos = veiculoRepository.findTop10By();
         if (veiculos.isEmpty()){
-            throw new FipewalException("Nenhum veiculo foi encontrado no banco de dados!");
+            throw new FipewalException500InternalServerError("Nenhum veiculo foi encontrado no banco de dados!");
         }
         return veiculoMapper.listToDto(veiculos);
     }
 
     public VeiculoDto incluirAcessorioAoVeiculo(Long idVeiculo, Long idAcessorio) {
-        Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(() -> new FipewalException("Veiculo "+idVeiculo+" não encontrado."));
-        Acessorio acessorio = acessorioRepository.findById(idAcessorio).orElseThrow(()->new FipewalException("Acessório "+idAcessorio+" não encontrado."));
+        Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(() -> new FipewalException500InternalServerError("Veiculo "+idVeiculo+" não encontrado."));
+        Acessorio acessorio = acessorioRepository.findById(idAcessorio).orElseThrow(()->new FipewalException500InternalServerError("Acessório "+idAcessorio+" não encontrado."));
         veiculo.adicionaAcessorio(acessorio);
         return veiculoMapper.toDto(veiculoRepository.save(veiculo));
     }
@@ -60,7 +61,7 @@ public class VeiculoService {
 
     public void deletarVeiculo(Long id) {
         if (!veiculoRepository.existsById(id)){
-            throw new FipewalException("Veículo com ID " + id + " não encontrado para exclusão.");
+            throw new FipewalException400BadRequest("Veículo com ID " + id + " não encontrado para exclusão.");
         }
         veiculoRepository.deleteById(id);
     }

@@ -1,6 +1,7 @@
 package br.com.gigalike.veiculos.service;
 import br.com.gigalike.veiculos.dto.DocumentoDto;
-import br.com.gigalike.veiculos.exception.FipewalException;
+import br.com.gigalike.veiculos.exception.FipewalException400BadRequest;
+import br.com.gigalike.veiculos.exception.FipewalException500InternalServerError;
 import br.com.gigalike.veiculos.mapper.DocumentoMapper;
 import br.com.gigalike.veiculos.model.Documento;
 import br.com.gigalike.veiculos.repository.DocumentoRepository;
@@ -23,21 +24,21 @@ public class DocumentoService {
     }
 
     public DocumentoDto buscaEntidadeDocumentoPorId(long id){
-        Documento documento = documentoRepository.findById(id).orElseThrow(()->new FipewalException("Documento não encontrado."));
+        Documento documento = documentoRepository.findById(id).orElseThrow(()->new FipewalException400BadRequest("Documento não encontrado."));
         return documentoMapper.toDto(documento);
     }
 
     public List<DocumentoDto> buscarDocumentos() {
         List<Documento> documentos = documentoRepository.findTop10By();
         if (documentos.isEmpty()){
-            throw new FipewalException("Nenhum documento encontrado.");
+            throw new FipewalException500InternalServerError("Nenhum documento encontrado.");
         }
         return documentoMapper.listToDto(documentos);
     }
 
     public void excluirDocumento(Long id) {
         if (!documentoRepository.existsById(id)){
-            throw new FipewalException("Não encontrado documento com ID igual a "+id);
+            throw new FipewalException400BadRequest("Não encontrado documento com ID igual a "+id);
         }
         documentoRepository.deleteById(id);
     }

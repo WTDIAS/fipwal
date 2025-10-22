@@ -1,7 +1,5 @@
 package br.com.gigalike.veiculos.model;
 
-import br.com.gigalike.veiculos.exception.FipewalException;
-
 public enum TipoVeiculo {
     indefinido(0),
     carros(1),
@@ -27,14 +25,4 @@ public enum TipoVeiculo {
         }
         return tipoStr;
    }
-/*
-    public static TipoVeiculo converteIntParaTipoVeiculo(int intTipo) {
-        for (TipoVeiculo tipoVeiculo : TipoVeiculo.values()) {
-            if (tipoVeiculo.valorTipo == intTipo) {
-                return tipoVeiculo;
-            }
-        }
-        // RECOMENDADO: Lançar exceção se o código for inválido
-        throw new FipewalException("Código de tipo de veículo inválido: " + intTipo);
-    }*/
 }

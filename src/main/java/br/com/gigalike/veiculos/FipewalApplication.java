@@ -1,3 +1,4 @@
+
 package br.com.gigalike.veiculos;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,3 +9,4 @@ public class FipewalApplication {
 		SpringApplication.run(FipewalApplication.class, args);
 	}
 }
+

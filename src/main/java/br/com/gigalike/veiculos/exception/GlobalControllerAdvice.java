@@ -11,11 +11,18 @@ import java.time.LocalDateTime;
 public class GlobalControllerAdvice {
     private static final Logger logger = LoggerFactory.getLogger(GlobalControllerAdvice.class);
 
-    @ExceptionHandler(FipewalException.class)
-    public ResponseEntity<ResponseError> globalFipewalException(FipewalException ex){
+    @ExceptionHandler(FipewalException500InternalServerError.class)
+    public ResponseEntity<ResponseError> globalFipewalException500InternalServerError(FipewalException500InternalServerError ex){
         ResponseError responseErrror = new ResponseError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), LocalDateTime.now());
-        logger.warn("FipewalException: ", ex);
+        logger.warn("FipewalException500InternalServerError: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseErrror);
+    }
+
+    @ExceptionHandler(FipewalException400BadRequest.class)
+    public ResponseEntity<ResponseError> globalFipewalException400BadRequest(FipewalException400BadRequest ex){
+        ResponseError responseError = new ResponseError(HttpStatus.BAD_REQUEST, ex.getMessage(), LocalDateTime.now());
+        logger.error(this.getClass().getName()+": ",ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }
 
     @ExceptionHandler(Exception.class)

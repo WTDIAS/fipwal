@@ -1,7 +1,8 @@
 package br.com.gigalike.veiculos.service;
 
 import br.com.gigalike.veiculos.dto.ProprietarioDto;
-import br.com.gigalike.veiculos.exception.FipewalException;
+import br.com.gigalike.veiculos.exception.FipewalException400BadRequest;
+import br.com.gigalike.veiculos.exception.FipewalException500InternalServerError;
 import br.com.gigalike.veiculos.mapper.ProprietarioMapper;
 import br.com.gigalike.veiculos.model.Proprietario;
 import br.com.gigalike.veiculos.repository.ProprietarioRepository;
@@ -10,9 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -56,7 +55,7 @@ class ProprietarioServiceTest {
         //ARRANGE
         ProprietarioDto proprietarioDtoInvalido = new ProprietarioDto(null,"","123456789");
         //ACT
-        FipewalException excecao = assertThrows(FipewalException.class,() -> proprietarioService.salvarProprietario(proprietarioDtoInvalido));
+        FipewalException400BadRequest excecao = assertThrows(FipewalException400BadRequest.class,() -> proprietarioService.salvarProprietario(proprietarioDtoInvalido));
         //ASSERT
         assertEquals("Informe um nome para o proprietário.", excecao.getMessage());
         verify(proprietarioMapper,never()).toEntity(any());
@@ -69,7 +68,7 @@ class ProprietarioServiceTest {
         //ARRANGE
         ProprietarioDto proprietarioDtoInvalido = new ProprietarioDto(null,null,"123456789");
         //ACT & ASSERT
-        FipewalException excecao = assertThrows(FipewalException.class,() -> proprietarioService.salvarProprietario(proprietarioDtoInvalido));
+        FipewalException400BadRequest excecao = assertThrows(FipewalException400BadRequest.class,() -> proprietarioService.salvarProprietario(proprietarioDtoInvalido));
         assertEquals("Informe um nome para o proprietário.", excecao.getMessage());
         verify(proprietarioMapper,never()).toEntity(any());
         verify(proprietarioMapper,never()).toDto(any());
@@ -102,7 +101,7 @@ class ProprietarioServiceTest {
         when(proprietarioRepository.findById(idInvalido)).thenReturn(Optional.empty());
 
         //ACT & ASSERT
-        FipewalException excecao = assertThrows(FipewalException.class,()->proprietarioService.buscaProprietarioPorId(idInvalido));
+        FipewalException400BadRequest excecao = assertThrows(FipewalException400BadRequest.class,()->proprietarioService.buscaProprietarioPorId(idInvalido));
         assertEquals("Proprietário não encontrado.",excecao.getMessage());
         verify(proprietarioMapper,never()).toDto(any());
         verify(proprietarioRepository,times(1)).findById(idInvalido);

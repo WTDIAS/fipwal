@@ -1,12 +1,10 @@
 package br.com.gigalike.veiculos.controller;
 import br.com.gigalike.veiculos.dto.AcessorioDto;
 import br.com.gigalike.veiculos.service.AcessorioService;
-import org.mapstruct.ap.shaded.freemarker.core.ReturnInstruction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -15,16 +13,16 @@ public class AcessorioController {
     @Autowired
     AcessorioService acessorioService = new AcessorioService();
 
-    @GetMapping
-    public ResponseEntity<List<AcessorioDto>> buscaTodosAcessorios(){
-        List<AcessorioDto> acessorioList = acessorioService.buscar10();
-        return ResponseEntity.ok().body(acessorioList);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<AcessorioDto> buscaAcessorioPorId(@PathVariable long id){
         AcessorioDto acessorioDto = acessorioService.buscarDtoPorId(id);
         return ResponseEntity.ok().body(acessorioDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AcessorioDto>> buscaAcessorios(){
+        List<AcessorioDto> acessorioList = acessorioService.buscarAcessorios();
+        return ResponseEntity.ok().body(acessorioList);
     }
 
     @PostMapping
