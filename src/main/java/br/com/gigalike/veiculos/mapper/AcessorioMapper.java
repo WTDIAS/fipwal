@@ -12,6 +12,7 @@ public interface AcessorioMapper {
     @Mapping(source = "descricao", target = "descricao")
     @Mapping(source = "preco", target = "preco")
     AcessorioDto toDto(Acessorio acessorio);
+
     @Mapping(source = "id", target = "id")
     @Mapping(source = "nome", target = "nome")
     @Mapping(source = "descricao", target = "descricao")

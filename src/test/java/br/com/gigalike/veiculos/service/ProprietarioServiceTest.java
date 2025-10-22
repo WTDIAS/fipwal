@@ -1,16 +1,17 @@
 package br.com.gigalike.veiculos.service;
-
 import br.com.gigalike.veiculos.dto.ProprietarioDto;
 import br.com.gigalike.veiculos.exception.FipewalException400BadRequest;
-import br.com.gigalike.veiculos.exception.FipewalException500InternalServerError;
 import br.com.gigalike.veiculos.mapper.ProprietarioMapper;
 import br.com.gigalike.veiculos.model.Proprietario;
 import br.com.gigalike.veiculos.repository.ProprietarioRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -51,7 +52,7 @@ class ProprietarioServiceTest {
 
 
     @Test
-    void deveLancarExcecaoQuandoNomeProprietarioForVazio(){
+    void deveRetornarCodigo400QuandoNomeProprietarioForVazio(){
         //ARRANGE
         ProprietarioDto proprietarioDtoInvalido = new ProprietarioDto(null,"","123456789");
         //ACT
@@ -64,7 +65,7 @@ class ProprietarioServiceTest {
 
 
     @Test
-    void deveLancarExcecaoQuandoNomeProprietarioForNulo(){
+    void deveRetornarCodigo400QuandoNomeProprietarioForNulo(){
         //ARRANGE
         ProprietarioDto proprietarioDtoInvalido = new ProprietarioDto(null,null,"123456789");
         //ACT & ASSERT
@@ -74,8 +75,10 @@ class ProprietarioServiceTest {
         verify(proprietarioMapper,never()).toDto(any());
     }
 
+
     @Test
-    void deveBuscaProprietarioPorIdNoBancoDeDados() {
+    @DisplayName("Deve retornar um proprietário ao buscar por um ID válido.")
+    void deveRetornarUmProprietarioPorId() {
         //ARRANGE
         Proprietario proprietario = new Proprietario(1L,"Nome","123456789");
         ProprietarioDto proprietarioDto = new ProprietarioDto(1L,"Nome","123456789");
@@ -95,7 +98,8 @@ class ProprietarioServiceTest {
     }
 
     @Test
-    void deveLancarExcecaoQuandoProprietarioNaoForEncontrado(){
+    @DisplayName("Deve retornar codigo 400 se o ID informado não for encontrado no bando de dados.")
+    void deveRetornarCodigo400QuandoProprietarioNaoForEncontrado(){
         //ARRANGE
         Long idInvalido = 0L;
         when(proprietarioRepository.findById(idInvalido)).thenReturn(Optional.empty());
@@ -105,6 +109,31 @@ class ProprietarioServiceTest {
         assertEquals("Proprietário não encontrado.",excecao.getMessage());
         verify(proprietarioMapper,never()).toDto(any());
         verify(proprietarioRepository,times(1)).findById(idInvalido);
+
+    }
+
+    @Test
+    @DisplayName("Deve retornar uma lista com alguns proprietarios cadastrados no banco de dados")
+    void deveRetornarListaComProprietarios(){
+        //ARRANGE
+        Proprietario proprietario1 = new Proprietario(1L,"Proprietario1","123456789");
+        Proprietario proprietario2 = new Proprietario(2L,"Proprietario2","559491847");
+        List<Proprietario> proprietarioList = List.of(proprietario1,proprietario2);
+
+        ProprietarioDto proprietarioDto1 = new ProprietarioDto(1L,"proprietarioDto1","123456789");
+        ProprietarioDto proprietarioDto2 = new ProprietarioDto(2L,"proprietarioDto2","559491847");
+        List<ProprietarioDto> proprietarioDtoList = List.of(proprietarioDto1,proprietarioDto2);
+
+        when(proprietarioRepository.findTop10By()).thenReturn(proprietarioList);
+        when(proprietarioMapper.listToDto(proprietarioList)).thenReturn(proprietarioDtoList);
+
+        //ACT
+        List<ProprietarioDto> resultadoList = proprietarioService.buscaProprietarios();
+
+        //ASSERT
+        assertEquals(resultadoList,proprietarioDtoList);
+        verify(proprietarioRepository,times(1)).findTop10By();
+        verify(proprietarioMapper,times(1)).listToDto(proprietarioList);
 
     }
 }

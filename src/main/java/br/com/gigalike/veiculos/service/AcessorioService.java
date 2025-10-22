@@ -26,8 +26,11 @@ public class AcessorioService {
 
 
     public AcessorioDto salvarAcessorioNoBd(AcessorioDto acessorioDto){
-        Acessorio acessorio = acessorioMapper.toEntity(acessorioDto);
-         return acessorioMapper.toDto(acessorioRepository.save(acessorio));
+       if (acessorioDto == null || acessorioDto.nome() == null || acessorioDto.nome().trim().isEmpty() || acessorioDto.preco() <= 0){
+           throw new FipewalException400BadRequest("Dados inválidos para cadastro de acessório.");
+       }
+       Acessorio acessorio = acessorioMapper.toEntity(acessorioDto);
+       return acessorioMapper.toDto(acessorioRepository.save(acessorio));
     }
 
 

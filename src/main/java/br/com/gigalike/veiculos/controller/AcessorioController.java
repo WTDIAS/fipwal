@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-//Waldir 22/10/2025
 
 @RestController
 @RequestMapping("/acessorio")
