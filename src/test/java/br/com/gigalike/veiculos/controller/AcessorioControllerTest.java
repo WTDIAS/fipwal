@@ -23,6 +23,7 @@ public class AcessorioControllerTest {
     private MockMvc mockMvc;
     @MockitoBean
     private AcessorioService acessorioService;
+
     private static final String endPointRaiz = "/acessorio";
 
     @Test

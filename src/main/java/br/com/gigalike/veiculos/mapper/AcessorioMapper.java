@@ -18,6 +18,7 @@ public interface AcessorioMapper {
     @Mapping(source = "descricao", target = "descricao")
     @Mapping(source = "preco", target = "preco")
     Acessorio toEntity(AcessorioDto acessorioDto);
+
     List<AcessorioDto> listToDto(List<Acessorio> acessorioList);
 }
 
