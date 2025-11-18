@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @RequestMapping("/veiculos")
 public class VeiculoController {
     @Autowired
-    VeiculoService veiculoService;
+    private VeiculoService veiculoService;
 
     @GetMapping
     private ResponseEntity<List<VeiculoDto>> buscarVeiculos(){
@@ -27,17 +28,18 @@ public class VeiculoController {
         return ResponseEntity.ok(veiculoDto);
     }
 
-
     @PostMapping
-    public ResponseEntity<VeiculoDto> cadastrarVeiculo(@RequestBody VeiculoDto veiculoDto){
+    public ResponseEntity<VeiculoDto> cadastrarVeiculo(@RequestBody VeiculoDto veiculoDto, UriComponentsBuilder uriBuilder){
         VeiculoDto veiculoDtoSalvo = veiculoService.salvarVeiculoNoBd(veiculoDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(veiculoDtoSalvo);
+        var uri = uriBuilder.path("/veiculos/{id}").buildAndExpand(veiculoDtoSalvo.id()).toUri();
+        return ResponseEntity.created(uri).body(veiculoDtoSalvo);
     }
 
     @PostMapping("/{idVeiculo}/acessorio")
-    public ResponseEntity<VeiculoDto> incluirAcessorioAoVeiculo(@PathVariable Long idVeiculo, @RequestBody AcessorioIdRequestDto acessorioIdRequestDto){
+    public ResponseEntity<VeiculoDto> incluirAcessorioAoVeiculo(@PathVariable Long idVeiculo, @RequestBody AcessorioIdRequestDto acessorioIdRequestDto,UriComponentsBuilder uriBuilder){
         VeiculoDto veiculoDto = veiculoService.incluirAcessorioAoVeiculo(idVeiculo,acessorioIdRequestDto.acessorioId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(veiculoDto);
+        var uri = uriBuilder.path("/veiculos/{id}/acessorio").buildAndExpand(veiculoDto.id()).toUri();
+        return ResponseEntity.created(uri).body(veiculoDto);
     }
 
     @PutMapping

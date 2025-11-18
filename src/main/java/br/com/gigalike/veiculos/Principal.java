@@ -1,6 +1,6 @@
 /*
 package br.com.gigalike.veiculos;
-import br.com.gigalike.veiculos.exception.FipewalException500InternalServerError;
+import br.com.gigalike.veiculos.exception.ExceptionInternalServerError;
 import br.com.gigalike.veiculos.model.*;
 import br.com.gigalike.veiculos.service.*;
 import org.slf4j.Logger;

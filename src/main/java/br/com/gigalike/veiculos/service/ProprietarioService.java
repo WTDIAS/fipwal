@@ -1,8 +1,7 @@
 package br.com.gigalike.veiculos.service;
 
 import br.com.gigalike.veiculos.dto.ProprietarioDto;
-import br.com.gigalike.veiculos.exception.FipewalException400BadRequest;
-import br.com.gigalike.veiculos.exception.FipewalException500InternalServerError;
+import br.com.gigalike.veiculos.exception.ExceptionBadRequest;
 import br.com.gigalike.veiculos.mapper.ProprietarioMapper;
 import br.com.gigalike.veiculos.model.Proprietario;
 import br.com.gigalike.veiculos.repository.ProprietarioRepository;
@@ -16,20 +15,20 @@ import java.util.List;
 @Transactional
 public class ProprietarioService {
     @Autowired
-    ProprietarioRepository proprietarioRepository;
+    private ProprietarioRepository proprietarioRepository;
     @Autowired
-    ProprietarioMapper proprietarioMapper;
+    private ProprietarioMapper proprietarioMapper;
 
     public ProprietarioDto salvarProprietario(ProprietarioDto proprietarioDto){
         if (proprietarioDto.nome() == null || proprietarioDto.nome().isEmpty()){
-            throw new FipewalException400BadRequest("Informe um nome para o proprietário.");
+            throw new ExceptionBadRequest("Informe um nome para o proprietário.");
         }
         Proprietario proprietario = proprietarioMapper.toEntity(proprietarioDto);
         return proprietarioMapper.toDto(proprietarioRepository.save(proprietario));
     }
 
     public ProprietarioDto buscaProprietarioPorId(long id){
-        Proprietario proprietario = proprietarioRepository.findById(id).orElseThrow(()->new FipewalException400BadRequest("Proprietário não encontrado."));
+        Proprietario proprietario = proprietarioRepository.findById(id).orElseThrow(()->new ExceptionBadRequest("Proprietário não encontrado."));
         return proprietarioMapper.toDto(proprietario);
     }
 

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @RequestMapping("/documento")
 public class DocumentoController {
     @Autowired
-    DocumentoService documentoService = new DocumentoService();
+    private DocumentoService documentoService;
 
     @GetMapping
     public ResponseEntity<List<DocumentoDto>> buscaDocumentos(){
@@ -28,11 +29,12 @@ public class DocumentoController {
     }
 
     @PostMapping
-    public ResponseEntity<DocumentoDto> cadastrarDocumento(@RequestBody DocumentoDto documentoDto){
+    public ResponseEntity<DocumentoDto> cadastrarDocumento(@RequestBody DocumentoDto documentoDto, UriComponentsBuilder uriBuilder){
         DocumentoDto documentoDtoSalvo = documentoService.salvarDocumentoNoBd(documentoDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(documentoDtoSalvo);
+        var uri = uriBuilder.path("/documento/{id}").buildAndExpand(documentoDtoSalvo.id()).toUri();
+        return ResponseEntity.created(uri).body(documentoDtoSalvo);
     }
-   //conferir delete e retorno de não encontrado
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePorId(@PathVariable Long id){
         documentoService.excluirDocumento(id);

@@ -1,6 +1,6 @@
 package br.com.gigalike.veiculos.service;
 import br.com.gigalike.veiculos.dto.ProprietarioDto;
-import br.com.gigalike.veiculos.exception.FipewalException400BadRequest;
+import br.com.gigalike.veiculos.exception.ExceptionBadRequest;
 import br.com.gigalike.veiculos.mapper.ProprietarioMapper;
 import br.com.gigalike.veiculos.model.Proprietario;
 import br.com.gigalike.veiculos.repository.ProprietarioRepository;
@@ -56,7 +56,7 @@ class ProprietarioServiceTest {
         //ARRANGE
         ProprietarioDto proprietarioDtoInvalido = new ProprietarioDto(null,"","123456789");
         //ACT
-        FipewalException400BadRequest excecao = assertThrows(FipewalException400BadRequest.class,() -> proprietarioService.salvarProprietario(proprietarioDtoInvalido));
+        ExceptionBadRequest excecao = assertThrows(ExceptionBadRequest.class,() -> proprietarioService.salvarProprietario(proprietarioDtoInvalido));
         //ASSERT
         assertEquals("Informe um nome para o proprietário.", excecao.getMessage());
         verify(proprietarioMapper,never()).toEntity(any());
@@ -69,7 +69,7 @@ class ProprietarioServiceTest {
         //ARRANGE
         ProprietarioDto proprietarioDtoInvalido = new ProprietarioDto(null,null,"123456789");
         //ACT & ASSERT
-        FipewalException400BadRequest excecao = assertThrows(FipewalException400BadRequest.class,() -> proprietarioService.salvarProprietario(proprietarioDtoInvalido));
+        ExceptionBadRequest excecao = assertThrows(ExceptionBadRequest.class,() -> proprietarioService.salvarProprietario(proprietarioDtoInvalido));
         assertEquals("Informe um nome para o proprietário.", excecao.getMessage());
         verify(proprietarioMapper,never()).toEntity(any());
         verify(proprietarioMapper,never()).toDto(any());
@@ -105,7 +105,7 @@ class ProprietarioServiceTest {
         when(proprietarioRepository.findById(idInvalido)).thenReturn(Optional.empty());
 
         //ACT & ASSERT
-        FipewalException400BadRequest excecao = assertThrows(FipewalException400BadRequest.class,()->proprietarioService.buscaProprietarioPorId(idInvalido));
+        ExceptionBadRequest excecao = assertThrows(ExceptionBadRequest.class,()->proprietarioService.buscaProprietarioPorId(idInvalido));
         assertEquals("Proprietário não encontrado.",excecao.getMessage());
         verify(proprietarioMapper,never()).toDto(any());
         verify(proprietarioRepository,times(1)).findById(idInvalido);

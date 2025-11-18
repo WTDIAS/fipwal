@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -14,9 +15,9 @@ import java.util.List;
 public class ProprietarioController {
 
     @Autowired
-    ProprietarioMapper proprietarioMapper;
+    private ProprietarioMapper proprietarioMapper;
     @Autowired
-    ProprietarioService proprietarioService;
+    private ProprietarioService proprietarioService;
 
 
     @GetMapping
@@ -32,8 +33,9 @@ public class ProprietarioController {
     }
 
     @PostMapping
-    public ResponseEntity<ProprietarioDto> salvarProprietario(@RequestBody ProprietarioDto proprietarioDto){
+    public ResponseEntity<ProprietarioDto> salvarProprietario(@RequestBody ProprietarioDto proprietarioDto, UriComponentsBuilder uriBuilder){
         ProprietarioDto proprietarioDtoSalvo = proprietarioService.salvarProprietario(proprietarioDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(proprietarioDtoSalvo);
+        var uri = uriBuilder.path("/proprietario/{id}").buildAndExpand(proprietarioDtoSalvo.id()).toUri();
+        return ResponseEntity.created(uri).body(proprietarioDtoSalvo);
     }
 }

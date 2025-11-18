@@ -1,7 +1,7 @@
 package br.com.gigalike.veiculos.controller;
 import br.com.gigalike.veiculos.dto.AcessorioDto;
-import br.com.gigalike.veiculos.exception.FipewalException400BadRequest;
-import br.com.gigalike.veiculos.exception.FipewalException500InternalServerError;
+import br.com.gigalike.veiculos.exception.ExceptionBadRequest;
+import br.com.gigalike.veiculos.exception.ExceptionInternalServerError;
 import br.com.gigalike.veiculos.service.AcessorioService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 @WebMvcTest(AcessorioController.class)
 public class AcessorioControllerTest {
@@ -47,7 +46,7 @@ public class AcessorioControllerTest {
     void deveRetornarFipeException400AcessorioNaoEncontrado() throws Exception {
         long idInexistente = 0L;
         when(acessorioService.buscarDtoPorId(idInexistente)).
-                thenThrow(new FipewalException400BadRequest("Acessório não encontrado com ID: " + idInexistente));
+                thenThrow(new ExceptionBadRequest("Acessório não encontrado com ID: " + idInexistente));
         mockMvc.perform(get(endPointRaiz+"/"+idInexistente).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Acessório não encontrado com ID: " + idInexistente));
@@ -72,8 +71,8 @@ public class AcessorioControllerTest {
 
     @Test
     void deveRetornarCodigo500SeNaoencontrarNenhumAcessorio() throws Exception {
-        when(acessorioService
-                .buscarAcessorios()).thenThrow(new FipewalException500InternalServerError("Nenhum acessório encontrado."));
+        when(acessorioService.buscarAcessorios())
+                .thenThrow(new ExceptionInternalServerError("Nenhum acessório encontrado."));
 
         mockMvc.perform(get(endPointRaiz).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError())
@@ -112,12 +111,12 @@ public class AcessorioControllerTest {
                         {}
                         """;
         when(acessorioService.salvarAcessorioNoBd(any(AcessorioDto.class)))
-                .thenThrow(new FipewalException500InternalServerError(
+                .thenThrow(new ExceptionInternalServerError(
                         "Houve um erro interno no servidor. Tente novamente mais tarde. Se o problema persistir informe o administrador."));
 
         mockMvc.perform(post(endPointRaiz)
                 .contentType(MediaType.APPLICATION_JSON)
-                .contentType(jsonInvalido))
+                .content(jsonInvalido))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message").value(
                         "Houve um erro interno no servidor. Tente novamente mais tarde. Se o problema persistir informe o administrador."));
@@ -135,7 +134,7 @@ public class AcessorioControllerTest {
                 }
                 """;
         when(acessorioService.salvarAcessorioNoBd(any(AcessorioDto.class)))
-                .thenThrow(new FipewalException400BadRequest("Dados inválidos para cadastro de acessório."));
+                .thenThrow(new ExceptionBadRequest("Dados inválidos para cadastro de acessório."));
         mockMvc.perform(post(endPointRaiz)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonInvalido))
@@ -155,7 +154,7 @@ public class AcessorioControllerTest {
                 }
                 """;
         when(acessorioService.salvarAcessorioNoBd(any(AcessorioDto.class)))
-                .thenThrow(new FipewalException400BadRequest("Dados inválidos para cadastro de acessório."));
+                .thenThrow(new ExceptionBadRequest("Dados inválidos para cadastro de acessório."));
         mockMvc.perform(post(endPointRaiz)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonInvalido))

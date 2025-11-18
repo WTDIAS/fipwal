@@ -1,7 +1,7 @@
 package br.com.gigalike.veiculos.service;
 import br.com.gigalike.veiculos.dto.AcessorioDto;
-import br.com.gigalike.veiculos.exception.FipewalException400BadRequest;
-import br.com.gigalike.veiculos.exception.FipewalException500InternalServerError;
+import br.com.gigalike.veiculos.exception.ExceptionBadRequest;
+import br.com.gigalike.veiculos.exception.ExceptionInternalServerError;
 import br.com.gigalike.veiculos.mapper.AcessorioMapper;
 import br.com.gigalike.veiculos.model.Acessorio;
 import br.com.gigalike.veiculos.repository.AcessorioRepository;
@@ -15,19 +15,19 @@ import java.util.List;
 @Transactional
 public class AcessorioService {
     @Autowired
-    AcessorioRepository acessorioRepository;
+    private AcessorioRepository acessorioRepository;
     @Autowired
-    AcessorioMapper acessorioMapper;
+    private AcessorioMapper acessorioMapper;
 
     public AcessorioDto buscarDtoPorId(long id){
-        Acessorio acessorio = acessorioRepository.findById(id).orElseThrow(()-> new FipewalException500InternalServerError("Acessório não encontrado com ID: " + id));
+        Acessorio acessorio = acessorioRepository.findById(id).orElseThrow(()-> new ExceptionInternalServerError("Acessório não encontrado com ID: " + id));
         return acessorioMapper.toDto(acessorio);
     }
 
 
     public AcessorioDto salvarAcessorioNoBd(AcessorioDto acessorioDto){
        if (acessorioDto == null || acessorioDto.nome() == null || acessorioDto.nome().trim().isEmpty() || acessorioDto.preco() <= 0){
-           throw new FipewalException400BadRequest("Dados inválidos para cadastro de acessório.");
+           throw new ExceptionBadRequest("Dados inválidos para cadastro de acessório.");
        }
        Acessorio acessorio = acessorioMapper.toEntity(acessorioDto);
        return acessorioMapper.toDto(acessorioRepository.save(acessorio));
@@ -37,14 +37,14 @@ public class AcessorioService {
     public List<AcessorioDto> buscarAcessorios() {
         List<Acessorio> acessorioList = acessorioRepository.findTop10By();
         if (acessorioList.isEmpty()){
-            throw new FipewalException500InternalServerError("Nenhum acessório encontrado.");
+            throw new ExceptionInternalServerError("Nenhum acessório encontrado.");
         }
         return acessorioMapper.listToDto(acessorioList);
     }
 
     public void deletaAcessorio(long id) {
         if (!acessorioRepository.existsById(id)){
-            throw new FipewalException400BadRequest("Acessório não encontrado para exclusão.");
+            throw new ExceptionBadRequest("Acessório não encontrado para exclusão.");
         }
         acessorioRepository.deleteById(id);
     }
