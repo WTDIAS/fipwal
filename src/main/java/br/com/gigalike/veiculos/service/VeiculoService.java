@@ -8,6 +8,7 @@ import br.com.gigalike.veiculos.repository.AcessorioRepository;
 import br.com.gigalike.veiculos.repository.VeiculoRepository;
 import br.com.gigalike.veiculos.utilitarios.ConverterJsonParaVeiculo;
 import br.com.gigalike.veiculos.utilitarios.FipeUrlBuilder;
+import br.com.gigalike.veiculos.utils.ClienteHttp;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
