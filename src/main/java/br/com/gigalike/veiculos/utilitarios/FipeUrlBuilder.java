@@ -1,20 +1,22 @@
 package br.com.gigalike.veiculos.utilitarios;
-import br.com.gigalike.veiculos.model.TipoVeiculo;
 
 
 public class FipeUrlBuilder {
+    /**
+     * Link de exemplo para consulta no navegador:
+     * https://parallelum.com.br/fipe/api/v1/carros/marcas/22/modelos/672/anos/1991-1
+     * */
     private final static String BASE = "https://parallelum.com.br/fipe/api/v1/";
     private String url;
 
 
-    private FipeUrlBuilder(int codigoTipo) {
-        String strTipo = TipoVeiculo.getStrTipo(codigoTipo);
-        this.url = BASE + strTipo + "/marcas";
+    public static FipeUrlBuilder create(String tipoVeiculo) {
+        return new FipeUrlBuilder(tipoVeiculo);
     }
 
 
-    public static FipeUrlBuilder create(int codigoTipo) {
-        return new FipeUrlBuilder(codigoTipo);
+    private FipeUrlBuilder(String tipoVeiculo) {
+        this.url = BASE + tipoVeiculo + "/marcas";
     }
 
 

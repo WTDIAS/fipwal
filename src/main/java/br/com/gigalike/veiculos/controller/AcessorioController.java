@@ -38,4 +38,6 @@ public class AcessorioController {
         acessorioService.deletaAcessorio(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }

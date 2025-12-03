@@ -57,28 +57,32 @@ public class VeiculoController {
 
     //******************** BUSCA NA API *************************
 
-    @GetMapping("/tipo/{codigoTipo}")
-    public  ResponseEntity<String> exibeMarcas(@PathVariable int codigoTipo){
-        String jsonMarcas = veiculoService.buscaMarcasNaApi(codigoTipo);
+    /**
+     * Para utilizar a integração com a API https://parallelum.com.br/fipe/api/v1/,
+     * a primeira coisa a ser informada deve ser o tipo, sendo: carros, motos ou caminhoes
+     * Exemplo de busca de carros: https://parallelum.com.br/fipe/api/v1/carros/marcas
+     * */
+    @GetMapping("/tipo/{tipoVeiculo}")
+    public  ResponseEntity<String> exibeMarcas(@PathVariable String tipoVeiculo){
+        String jsonMarcas = veiculoService.buscaMarcasNaApi(tipoVeiculo);
         return ResponseEntity.ok().body(jsonMarcas);
     }
 
-    @GetMapping("tipo/{codigoTipo}/marca/{codigoMarca}")
-    public ResponseEntity<String> buscaModelosNaApi(@PathVariable int codigoTipo, @PathVariable int codigoMarca){
-        String jsonModelos = veiculoService.buscaModelosNaApi(codigoTipo, codigoMarca);
+    @GetMapping("tipo/{tipoVeiculo}/marcas/{codigoMarca}")
+    public ResponseEntity<String> buscaModelosNaApi(@PathVariable String tipoVeiculo, @PathVariable int codigoMarca){
+        String jsonModelos = veiculoService.buscaModelosNaApi(tipoVeiculo, codigoMarca);
         return ResponseEntity.ok().body(jsonModelos);
     }
 
-    @GetMapping("tipo/{codigoTipo}/marca/{codigoMarca}/modelo/{codigoModelo}")
-    public ResponseEntity<String> buscaAnosNaApi(@PathVariable int codigoTipo, @PathVariable int codigoMarca, @PathVariable int codigoModelo){
-        String jsonModelos = veiculoService.buscaAnosNaApi(codigoTipo, codigoMarca, codigoModelo);
+    @GetMapping("tipo/{tipoVeiculo}/marcas/{codigoMarca}/modelos/{codigoModelo}")
+    public ResponseEntity<String> buscaAnosNaApi(@PathVariable String tipoVeiculo, @PathVariable int codigoMarca, @PathVariable int codigoModelo){
+        String jsonModelos = veiculoService.buscaAnosNaApi(tipoVeiculo, codigoMarca, codigoModelo);
         return ResponseEntity.ok().body(jsonModelos);
     }
 
-    @GetMapping("tipo/{codigoTipo}/marca/{codigoMarca}/modelo/{codigoModelo}/ano/{strAno}")
-    public ResponseEntity<VeiculoDto> buscaDadosDoVeiculoNaApi(@PathVariable int codigoTipo, @PathVariable int codigoMarca, @PathVariable int codigoModelo, @PathVariable String strAno){
-        VeiculoDto veiculoDto = veiculoService.buscaDadosVeiculoNaApi(codigoTipo, codigoMarca, codigoModelo, strAno);
-        return ResponseEntity.ok().body(veiculoDto);
+    @GetMapping("tipo/{tipoVeiculo}/marcas/{codigoMarca}/modelos/{codigoModelo}/anos/{strAno}")
+    public ResponseEntity buscaDadosDoVeiculoNaApi(@PathVariable String tipoVeiculo, @PathVariable int codigoMarca, @PathVariable int codigoModelo, @PathVariable String strAno){
+        return veiculoService.buscaDadosVeiculoNaApi(tipoVeiculo, codigoMarca, codigoModelo, strAno);
     }
 
 }

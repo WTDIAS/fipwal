@@ -8,15 +8,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ProprietarioMapper {
-
-    @Mapping(source = "nome", target = "nome")
-    @Mapping(source = "telefone", target = "telefone")
-    @Mapping(source = "id", target = "id")
     ProprietarioDto toDto(Proprietario proprietario);
-
-    @Mapping(source = "nome", target = "nome")
-    @Mapping(source = "telefone", target = "telefone")
-    @Mapping(source = "id", target = "id")
     Proprietario toEntity(ProprietarioDto proprietarioDto);
     List<ProprietarioDto> listToDto (List<Proprietario> proprietarioList);
 }

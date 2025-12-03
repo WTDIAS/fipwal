@@ -9,13 +9,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface DocumentoMapper {
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "renavam", target = "renavam")
     DocumentoDto toDto(Documento documento);
-
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "renavam", target = "renavam")
     Documento toEntity(DocumentoDto documentoDto);
-
     List<DocumentoDto> listToDto(List<Documento> documentoList);
 }

@@ -11,6 +11,9 @@ import br.com.gigalike.veiculos.utilitarios.FipeUrlBuilder;
 import br.com.gigalike.veiculos.utils.ClienteHttp;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -69,22 +72,25 @@ public class VeiculoService {
 
     //******************** API **********************************
 
-    public String buscaMarcasNaApi(int codigoTipo){
-        String url = FipeUrlBuilder.create(codigoTipo).build();
+    /**
+     *  A partir do link: https://parallelum.com.br/fipe/api/v1/carros
+     * */
+    public String buscaMarcasNaApi(String tipoVeiculo){
+        String url = FipeUrlBuilder.create(tipoVeiculo).build();
         return clienteHttp.obterDadosApi(url);
     }
 
-
-    public String buscaModelosNaApi(int codigoTipo, int codigoMarca) {
-        String url = FipeUrlBuilder.create(codigoTipo)
+    //https://parallelum.com.br/fipe/api/v1/carros/marcas
+    public String buscaModelosNaApi(String tipoVeiculo, int codigoMarca) {
+        String url = FipeUrlBuilder.create(tipoVeiculo)
                 .comMarca(codigoMarca)
                 .build();
         return clienteHttp.obterDadosApi(url);
     }
 
 
-    public String buscaAnosNaApi(int codigoTipo, int codigoMarca, int codigoModelo) {
-        String url = FipeUrlBuilder.create(codigoTipo)
+    public String buscaAnosNaApi(String tipoVeiculo, int codigoMarca, int codigoModelo) {
+        String url = FipeUrlBuilder.create(tipoVeiculo)
                 .comMarca(codigoMarca)
                 .comModelo(codigoModelo)
                 .build();
@@ -92,16 +98,22 @@ public class VeiculoService {
     }
 
 
-    public VeiculoDto buscaDadosVeiculoNaApi(int tipo, int marca, int modelo, String anoStr) {
-        String url = FipeUrlBuilder.create(tipo)
+    public ResponseEntity buscaDadosVeiculoNaApi(String tipoVeiculo, int marca, int modelo, String anoStr) {
+        String url = FipeUrlBuilder.create(tipoVeiculo)
                 .comMarca(marca)
                 .comModelo(modelo)
                 .comAno(anoStr)
                 .build();
         String json = clienteHttp.obterDadosApi(url);
         VeiculoDto veiculoDto = ConverterJsonParaVeiculo.converterJson(json);
-        Veiculo veiculoSalvo = veiculoRepository.save(veiculoMapper.toEntity(veiculoDto));
-        return veiculoMapper.toDto(veiculoSalvo);
+        if (veiculoDto.codigoFipe() != null){
+            Veiculo veiculoSalvo = veiculoRepository.save(veiculoMapper.toEntity(veiculoDto));
+            return ResponseEntity.ok(veiculoSalvo);
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("CodigoFipe null. Veículo não encontrado.");
+        }
+
+
     }
 
 }

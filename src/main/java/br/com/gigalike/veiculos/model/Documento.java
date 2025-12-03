@@ -1,7 +1,13 @@
 package br.com.gigalike.veiculos.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "documentos")
 public class Documento {
@@ -9,44 +15,11 @@ public class Documento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false)
     private String renavam;
+
+    @Column(nullable = false)
+    private boolean ativo = true;
 
     @OneToOne(mappedBy = "documento",fetch = FetchType.LAZY)
     private Veiculo veiculo;
-
-    public Documento() {}
-
-    public Documento(long id, String renavam) {
-        this.id = id;
-        this.renavam = renavam;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getRenavam() {
-        return renavam;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setRenavam(String renavam) {
-        this.renavam = renavam;
-    }
-
-    public void setVeiculo(Veiculo veiculo) {
-        this.veiculo = veiculo;
-    }
-
-    @Override
-    public String toString() {
-        return "Documento{" +
-                "id=" + id +
-                ", renavam='" + renavam +
-                '}';
-    }
 }

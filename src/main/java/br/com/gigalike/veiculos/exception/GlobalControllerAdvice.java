@@ -25,6 +25,13 @@ public class GlobalControllerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }
 
+    @ExceptionHandler(ExceptionNotFound.class)
+    public ResponseEntity<ResponseError> exceptionNotFound(ExceptionNotFound ex){
+        ResponseError responseError = new ResponseError(HttpStatus.NOT_FOUND,ex.getMessage(),LocalDateTime.now());
+        logger.error(this.getClass().getName()+" : ",ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseError);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseError> globalException(Exception ex){
         ResponseError responseErrror = new ResponseError(
@@ -34,7 +41,5 @@ public class GlobalControllerAdvice {
         logger.error("Global Exception: ",ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseErrror);
     }
-
-
 
 }

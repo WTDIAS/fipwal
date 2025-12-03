@@ -6,7 +6,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-/** Faz a conexão com a API https://parallelum.com.br/fipe/api/v1/ e retorna o JSON */
+/** Faz a conexão com a API https://parallelum.com.br/fipe/api/v1/carros/marcas e retorna o JSON */
 @Component
 public class ClienteHttp {
     private static final Logger logger = LoggerFactory.getLogger(ClienteHttp.class);
