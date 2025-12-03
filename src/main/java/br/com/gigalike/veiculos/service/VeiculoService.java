@@ -12,7 +12,6 @@ import br.com.gigalike.veiculos.utils.ClienteHttp;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -73,7 +72,7 @@ public class VeiculoService {
     //******************** API **********************************
 
     /**
-     *  A partir do link: https://parallelum.com.br/fipe/api/v1/carros
+     *
      * */
     public String buscaMarcasNaApi(String tipoVeiculo){
         String url = FipeUrlBuilder.create(tipoVeiculo).build();

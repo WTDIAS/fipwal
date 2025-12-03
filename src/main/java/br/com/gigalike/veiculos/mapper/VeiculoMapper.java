@@ -3,7 +3,6 @@ package br.com.gigalike.veiculos.mapper;
 import br.com.gigalike.veiculos.dto.VeiculoDto;
 import br.com.gigalike.veiculos.model.Veiculo;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import java.util.List;
 
 @Mapper(componentModel = "spring",uses = {

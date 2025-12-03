@@ -24,7 +24,6 @@ public class ClienteHttp {
             logger.error("Erro ao tentar obter os dados da API!",e);
         }
 
-        String json = response.body();
-        return json;
+        return response.body();
     }
 }

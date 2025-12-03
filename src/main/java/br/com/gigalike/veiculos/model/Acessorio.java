@@ -1,7 +1,4 @@
 package br.com.gigalike.veiculos.model;
-
-import br.com.gigalike.veiculos.utilitarios.StringNormalizer;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 

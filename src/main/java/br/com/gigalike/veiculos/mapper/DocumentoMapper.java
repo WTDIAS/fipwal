@@ -2,7 +2,6 @@ package br.com.gigalike.veiculos.mapper;
 import br.com.gigalike.veiculos.dto.DocumentoDto;
 import br.com.gigalike.veiculos.model.Documento;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 import java.util.List;
 

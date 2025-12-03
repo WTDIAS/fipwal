@@ -1,7 +1,6 @@
 package br.com.gigalike.veiculos.service;
 import br.com.gigalike.veiculos.dto.AcessorioDto;
 import br.com.gigalike.veiculos.exception.ExceptionBadRequest;
-import br.com.gigalike.veiculos.exception.ExceptionInternalServerError;
 import br.com.gigalike.veiculos.exception.ExceptionNotFound;
 import br.com.gigalike.veiculos.mapper.AcessorioMapper;
 import br.com.gigalike.veiculos.model.Acessorio;
