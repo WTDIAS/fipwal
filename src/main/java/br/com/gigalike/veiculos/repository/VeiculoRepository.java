@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface VeiculoRepository extends JpaRepository<Veiculo,Long> {
     List<Veiculo> findTop10By();
 
-    Optional<Veiculo> findByCodigoFipe(@NotNull(message = "O campo código fipe (CodigoFipe) é obrigatório.") String s);
+    List<Veiculo> findAllByCodigoFipe(@NotNull(message = "O campo código fipe (CodigoFipe) é obrigatório.") String s);
 }

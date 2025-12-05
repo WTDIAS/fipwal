@@ -26,7 +26,7 @@ public class Veiculo {
     private int cilindradas;
     private String observacao;
     private String combustivel;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String codigoFipe;
     @Column(nullable = false)
     private boolean ativo = true;

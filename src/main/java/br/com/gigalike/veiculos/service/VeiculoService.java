@@ -106,12 +106,13 @@ public class VeiculoService {
                 .build();
         String json = clienteHttp.obterDadosApi(url);
         VeiculoDto veiculoDto = ConverterJsonParaVeiculo.converterJson(json);
-        if (veiculoDto.codigoFipe() != null){
-            //Verifica se já foi cadastrado no BD
-            Optional<Veiculo> veiculoExiste = veiculoRepository.findByCodigoFipe(veiculoDto.codigoFipe());
-            if (veiculoExiste.isPresent()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("Veículo já cadastrado com código FIPE: " + veiculoDto.codigoFipe());
+        List<Veiculo> veiculos = veiculoRepository.findAllByCodigoFipe(veiculoDto.codigoFipe());
+        if (veiculos != null && !veiculos.isEmpty()) {
+            for(Veiculo veiculo : veiculos){
+                if (veiculo.getAno() == veiculoDto.ano()){
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
+                            .body("Veículo já cadastrado com código FIPE: " + veiculoDto.codigoFipe());
+                }
             }
             Veiculo veiculoSalvo = veiculoRepository.save(veiculoMapper.toEntity(veiculoDto));
             return ResponseEntity.ok(veiculoSalvo);
@@ -119,5 +120,8 @@ public class VeiculoService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("CodigoFipe null. Veículo não encontrado.");
         }
     }
+
+
+
 
 }

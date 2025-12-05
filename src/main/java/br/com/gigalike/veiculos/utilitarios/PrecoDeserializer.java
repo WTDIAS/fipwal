@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class PrecoDeserializer extends JsonDeserializer<Double> {
     @Override
@@ -29,7 +31,7 @@ public class PrecoDeserializer extends JsonDeserializer<Double> {
         // Substitui a vírgula (separador decimal) por ponto (padrão Double)
         valorLimpo = valorLimpo.replace(",", ".");
 
-        return Double.valueOf(valorLimpo);
+        return new BigDecimal(valorLimpo).setScale(2, RoundingMode.HALF_UP).doubleValue();
 
     }
 }
