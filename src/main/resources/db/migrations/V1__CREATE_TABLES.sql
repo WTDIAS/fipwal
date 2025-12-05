@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS public.veiculos
     cilindradas INTEGER NOT NULL,
     observacao VARCHAR,
     combustivel VARCHAR,
-    codigoFipe VARCHAR,
+    codigoFipe VARCHAR UNIQUE,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     documento_id BIGINT UNIQUE,
     proprietario_id BIGINT,

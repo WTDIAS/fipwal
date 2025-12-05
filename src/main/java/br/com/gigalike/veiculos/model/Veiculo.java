@@ -26,16 +26,16 @@ public class Veiculo {
     private int cilindradas;
     private String observacao;
     private String combustivel;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String codigoFipe;
     @Column(nullable = false)
     private boolean ativo = true;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Documento documento = new Documento();
+    private Documento documento;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Proprietario proprietario = new Proprietario();
+    private Proprietario proprietario;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

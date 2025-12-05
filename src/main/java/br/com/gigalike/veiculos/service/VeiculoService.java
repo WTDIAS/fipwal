@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -106,13 +107,17 @@ public class VeiculoService {
         String json = clienteHttp.obterDadosApi(url);
         VeiculoDto veiculoDto = ConverterJsonParaVeiculo.converterJson(json);
         if (veiculoDto.codigoFipe() != null){
+            //Verifica se já foi cadastrado no BD
+            Optional<Veiculo> veiculoExiste = veiculoRepository.findByCodigoFipe(veiculoDto.codigoFipe());
+            if (veiculoExiste.isPresent()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Veículo já cadastrado com código FIPE: " + veiculoDto.codigoFipe());
+            }
             Veiculo veiculoSalvo = veiculoRepository.save(veiculoMapper.toEntity(veiculoDto));
             return ResponseEntity.ok(veiculoSalvo);
         }else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("CodigoFipe null. Veículo não encontrado.");
         }
-
-
     }
 
 }
