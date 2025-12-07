@@ -12,12 +12,12 @@ public class TipoVeiculoDeserializer extends JsonDeserializer<String> {
     public String deserialize(
             JsonParser jsonParser,
             DeserializationContext deserializationContext) throws IOException, JacksonException {
-        String numeroTipoVeiculo = jsonParser.getText();
-        return switch (numeroTipoVeiculo) {
+        String tipo = jsonParser.getText();
+        return switch (tipo) {
             case "1" -> "carros";
             case "2" -> "motos";
             case "3" -> "caminhoes";
-            default -> throw new IOException("O tipo de veículo deve ser: carros, motos ou caminhoes.");
+            default -> tipo;
         };
 
     }

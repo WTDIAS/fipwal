@@ -1,7 +1,7 @@
 package br.com.gigalike.veiculos.service;
+
 import br.com.gigalike.veiculos.dto.VeiculoDto;
-import br.com.gigalike.veiculos.exception.ExceptionBadRequest;
-import br.com.gigalike.veiculos.exception.ExceptionInternalServerError;
+import br.com.gigalike.veiculos.exception.ExceptionNotFound;
 import br.com.gigalike.veiculos.mapper.VeiculoMapper;
 import br.com.gigalike.veiculos.model.*;
 import br.com.gigalike.veiculos.repository.AcessorioRepository;
@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -32,21 +32,21 @@ public class VeiculoService {
 
 
     public VeiculoDto buscaPorId(long id) {
-        Veiculo veiculo = veiculoRepository.findById(id).orElseThrow(() -> new ExceptionInternalServerError("Veiculo não encontrado!"));
+        Veiculo veiculo = veiculoRepository.findById(id).orElseThrow(() -> new ExceptionNotFound("Veiculo não encontrado!"));
         return veiculoMapper.toDto(veiculo);
     }
 
     public List<VeiculoDto> buscarVeiculos() {
         List<Veiculo> veiculos = veiculoRepository.findTop10By();
-        if (veiculos.isEmpty()){
-            throw new ExceptionInternalServerError("Nenhum veiculo foi encontrado no banco de dados!");
+        if (veiculos.isEmpty()) {
+            throw new ExceptionNotFound("Nenhum veiculo foi encontrado no banco de dados!");
         }
         return veiculoMapper.listToDto(veiculos);
     }
 
     public VeiculoDto incluirAcessorioAoVeiculo(Long idVeiculo, Long idAcessorio) {
-        Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(() -> new ExceptionInternalServerError("Veiculo "+idVeiculo+" não encontrado."));
-        Acessorio acessorio = acessorioRepository.findById(idAcessorio).orElseThrow(()->new ExceptionInternalServerError("Acessório "+idAcessorio+" não encontrado."));
+        Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(() -> new ExceptionNotFound("Veiculo " + idVeiculo + " não encontrado."));
+        Acessorio acessorio = acessorioRepository.findById(idAcessorio).orElseThrow(() -> new ExceptionNotFound("Acessório " + idAcessorio + " não encontrado."));
         veiculo.adicionaAcessorio(acessorio);
         return veiculoMapper.toDto(veiculoRepository.save(veiculo));
     }
@@ -64,8 +64,8 @@ public class VeiculoService {
 
 
     public void deletarVeiculo(Long id) {
-        if (!veiculoRepository.existsById(id)){
-            throw new ExceptionBadRequest("Veículo com ID " + id + " não encontrado para exclusão.");
+        if (!veiculoRepository.existsById(id)) {
+            throw new ExceptionNotFound("Veículo com ID " + id + " não encontrado para exclusão.");
         }
         veiculoRepository.deleteById(id);
     }
@@ -74,13 +74,14 @@ public class VeiculoService {
 
     /**
      *
-     * */
-    public String buscaMarcasNaApi(String tipoVeiculo){
+     *
+     */
+    public String buscaMarcasNaApi(String tipoVeiculo) {
         String url = FipeUrlBuilder.create(tipoVeiculo).build();
         return clienteHttp.obterDadosApi(url);
     }
 
-    //https://parallelum.com.br/fipe/api/v1/carros/marcas
+
     public String buscaModelosNaApi(String tipoVeiculo, int codigoMarca) {
         String url = FipeUrlBuilder.create(tipoVeiculo)
                 .comMarca(codigoMarca)
@@ -106,22 +107,33 @@ public class VeiculoService {
                 .build();
         String json = clienteHttp.obterDadosApi(url);
         VeiculoDto veiculoDto = ConverterJsonParaVeiculo.converterJson(json);
-        List<Veiculo> veiculos = veiculoRepository.findAllByCodigoFipe(veiculoDto.codigoFipe());
-        if (veiculos != null && !veiculos.isEmpty()) {
-            for(Veiculo veiculo : veiculos){
-                if (veiculo.getAno() == veiculoDto.ano()){
-                    return ResponseEntity.status(HttpStatus.CONFLICT)
-                            .body("Veículo já cadastrado com código FIPE: " + veiculoDto.codigoFipe());
+        //Se a propriedade codigoFipe do DTO for nul já retorna.
+        if (veiculoDto.codigoFipe() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("CodigoFipe null. Veículo não encontrado.");
+        } else {
+            //Busca todos veículos com dodigoFipe informado
+            List<Veiculo> veiculos = veiculoRepository.findAllByCodigoFipe(veiculoDto.codigoFipe());
+            if (veiculos != null && !veiculos.isEmpty()) {
+                for (Veiculo veiculo : veiculos) {
+                    //Se existir algum com mesmo codigoFipe e mesmo ano retorna
+                    if (veiculo.getAno() == veiculoDto.ano()) {
+                        return ResponseEntity.status(HttpStatus.CONFLICT)
+                                .body("Veículo já cadastrado com código FIPE: " + veiculoDto.codigoFipe());
+                    }
                 }
+                //Não existe cadastrado com mesmo codigoFipe e ano então efetua o cadastro
+                Veiculo veiculoSalvo = veiculoRepository.save(veiculoMapper.toEntity(veiculoDto));
+                return ResponseEntity.ok(veiculoSalvo);
             }
+            //Se a lista for vazia é porque não existe nenhum cadastro com este códigoFipe ou nula efetua o cadastro.
             Veiculo veiculoSalvo = veiculoRepository.save(veiculoMapper.toEntity(veiculoDto));
             return ResponseEntity.ok(veiculoSalvo);
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("CodigoFipe null. Veículo não encontrado.");
         }
+
     }
-
-
-
-
 }
+
+
+
+
+

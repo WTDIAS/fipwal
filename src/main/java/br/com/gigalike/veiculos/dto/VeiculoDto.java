@@ -5,8 +5,13 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.constraints.NotNull;
-
 import java.util.Set;
+
+/**
+ * DTO utilizado para transportar os dados de um Veiculo entre a camada de apresentação (JSON) e a aplicação.
+ * @author Waldir Tiago Dias
+ * @version 1.0 12/2025
+ * */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record VeiculoDto(
