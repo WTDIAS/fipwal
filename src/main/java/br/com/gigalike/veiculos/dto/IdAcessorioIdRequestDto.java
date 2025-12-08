@@ -4,5 +4,5 @@ package br.com.gigalike.veiculos.dto;
  * @author Waldir Tiago Dias
  * @version 1.0 12/2025
  * */
-public record AcessorioIdRequestDto(Long acessorioId) {
+public record IdAcessorioIdRequestDto(Long acessorioId) {
 }

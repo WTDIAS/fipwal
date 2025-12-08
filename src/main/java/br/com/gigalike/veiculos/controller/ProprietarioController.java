@@ -38,4 +38,10 @@ public class ProprietarioController {
         var uri = uriBuilder.path("/proprietario/{id}").buildAndExpand(proprietarioDtoSalvo.id()).toUri();
         return ResponseEntity.created(uri).body(proprietarioDtoSalvo);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProprietario(@PathVariable long id){
+        proprietarioService.excluir(id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -1,5 +1,7 @@
 package br.com.gigalike.veiculos.controller;
-import br.com.gigalike.veiculos.dto.AcessorioIdRequestDto;
+import br.com.gigalike.veiculos.dto.IdAcessorioIdRequestDto;
+import br.com.gigalike.veiculos.dto.IdDocumentoRequestDto;
+import br.com.gigalike.veiculos.dto.IdProprietarioRequestDto;
 import br.com.gigalike.veiculos.dto.VeiculoDto;
 import br.com.gigalike.veiculos.service.VeiculoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +36,9 @@ public class VeiculoController {
         return ResponseEntity.created(uri).body(veiculoDtoSalvo);
     }
 
-    @PostMapping("/{idVeiculo}/acessorio")
-    public ResponseEntity<VeiculoDto> incluirAcessorioAoVeiculo(@PathVariable Long idVeiculo, @RequestBody AcessorioIdRequestDto acessorioIdRequestDto,UriComponentsBuilder uriBuilder){
-        VeiculoDto veiculoDto = veiculoService.incluirAcessorioAoVeiculo(idVeiculo,acessorioIdRequestDto.acessorioId());
+    @PostMapping("/{id}/acessorio")
+    public ResponseEntity<VeiculoDto> incluirAcessorioAoVeiculo(@PathVariable Long id, @RequestBody IdAcessorioIdRequestDto idAcessorioIdRequestDto, UriComponentsBuilder uriBuilder){
+        VeiculoDto veiculoDto = veiculoService.incluirAcessorioAoVeiculo(id, idAcessorioIdRequestDto.acessorioId());
         var uri = uriBuilder.path("/veiculos/{id}/acessorio").buildAndExpand(veiculoDto.id()).toUri();
         return ResponseEntity.created(uri).body(veiculoDto);
     }
@@ -51,6 +53,20 @@ public class VeiculoController {
     public ResponseEntity<Void> deletarVeiculo(@PathVariable Long id){
         veiculoService.deletarVeiculo(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{idVeiculo}/proprietario")
+    public ResponseEntity<VeiculoDto> incluirProprietario(@PathVariable Long idVeiculo, @RequestBody IdProprietarioRequestDto idProprietarioRequestDto, UriComponentsBuilder uriBuilder){
+        VeiculoDto  veiculoDto = veiculoService.incluirProprietario(idVeiculo, idProprietarioRequestDto.proprietarioId());
+        var uri = uriBuilder.path("veiculos/{idVeiculo}/proprietario").buildAndExpand(veiculoDto.id()).toUri();
+        return ResponseEntity.created(uri).body(veiculoDto);
+    }
+
+    @PutMapping("/{idVeiculo}/documento")
+    public ResponseEntity<VeiculoDto> incluirDocumento(@PathVariable Long idVeiculo, @RequestBody IdDocumentoRequestDto idDocumentoRequestDto, UriComponentsBuilder uriBuilder){
+        VeiculoDto  veiculoDto = veiculoService.incluirDocumento(idVeiculo, idDocumentoRequestDto.documentoId());
+        var uri = uriBuilder.path("veiculos/{idVeiculo}/documento").buildAndExpand(veiculoDto.id()).toUri();
+        return ResponseEntity.created(uri).body(veiculoDto);
     }
 
 

@@ -1,10 +1,15 @@
 package br.com.gigalike.veiculos.service;
 
+import br.com.gigalike.veiculos.dto.IdDocumentoRequestDto;
+import br.com.gigalike.veiculos.dto.IdProprietarioRequestDto;
 import br.com.gigalike.veiculos.dto.VeiculoDto;
+import br.com.gigalike.veiculos.exception.ExceptionConflict;
 import br.com.gigalike.veiculos.exception.ExceptionNotFound;
 import br.com.gigalike.veiculos.mapper.VeiculoMapper;
 import br.com.gigalike.veiculos.model.*;
 import br.com.gigalike.veiculos.repository.AcessorioRepository;
+import br.com.gigalike.veiculos.repository.DocumentoRepository;
+import br.com.gigalike.veiculos.repository.ProprietarioRepository;
 import br.com.gigalike.veiculos.repository.VeiculoRepository;
 import br.com.gigalike.veiculos.utilitarios.ConverterJsonParaVeiculo;
 import br.com.gigalike.veiculos.utilitarios.FipeUrlBuilder;
@@ -29,6 +34,10 @@ public class VeiculoService {
     private ClienteHttp clienteHttp;
     @Autowired
     private VeiculoMapper veiculoMapper;
+    @Autowired
+    private ProprietarioRepository proprietarioRepository;
+    @Autowired
+    private DocumentoRepository documentoRepository;
 
 
     public VeiculoDto buscaPorId(long id) {
@@ -48,7 +57,8 @@ public class VeiculoService {
         Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(() -> new ExceptionNotFound("Veiculo " + idVeiculo + " não encontrado."));
         Acessorio acessorio = acessorioRepository.findById(idAcessorio).orElseThrow(() -> new ExceptionNotFound("Acessório " + idAcessorio + " não encontrado."));
         veiculo.adicionaAcessorio(acessorio);
-        return veiculoMapper.toDto(veiculoRepository.save(veiculo));
+        Veiculo veiculoSalvo = veiculoRepository.save(veiculo);
+        return veiculoMapper.toDto(veiculoSalvo);
     }
 
     public VeiculoDto salvarVeiculoNoBd(VeiculoDto veiculoDto) {
@@ -130,6 +140,30 @@ public class VeiculoService {
             return ResponseEntity.ok(veiculoSalvo);
         }
 
+    }
+
+    public VeiculoDto incluirProprietario(long idVeiculo, long idProprietario) {
+        Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(
+                () -> new ExceptionNotFound("Não encontrado veiculo com id " + idVeiculo));
+        if (veiculo.getProprietario() != null) {
+            throw new ExceptionConflict("Veículo já possui um proprietário cadastrado.");
+        }
+        Proprietario proprietario = proprietarioRepository.findById(idProprietario).orElseThrow(
+                () -> new ExceptionNotFound("Não encontrado proprietário com id " + idProprietario));
+        veiculo.setProprietario(proprietario);
+        return veiculoMapper.toDto(veiculoRepository.save(veiculo));
+    }
+
+    public VeiculoDto incluirDocumento(Long idVeiculo, long idDocumento ) {
+        Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(
+                () -> new ExceptionNotFound("Não encontrado veiculo com id " + idVeiculo));
+        if (veiculo.getDocumento() != null) {
+            throw new ExceptionConflict("Veículo "+idVeiculo+" já possui um documento cadastrado.");
+        }
+        Documento documento = documentoRepository.findById(idDocumento).orElseThrow(
+                () -> new ExceptionNotFound("Não encontrado documento com id " + idDocumento));
+        veiculo.setDocumento(documento);
+        return veiculoMapper.toDto(veiculoRepository.save(veiculo));
     }
 }
 

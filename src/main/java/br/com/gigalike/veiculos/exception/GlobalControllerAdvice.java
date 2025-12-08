@@ -42,4 +42,13 @@ public class GlobalControllerAdvice {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseErrror);
     }
 
+    @ExceptionHandler(ExceptionConflict.class)
+    public ResponseEntity<ResponseError> exceptionConflict(Exception ex){
+        ResponseError responseErrror = new ResponseError(
+                HttpStatus.CONFLICT,
+                ex.getMessage(),
+                LocalDateTime.now());
+        logger.error("Conflict Exception: ",ex);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(responseErrror);
+    }
 }

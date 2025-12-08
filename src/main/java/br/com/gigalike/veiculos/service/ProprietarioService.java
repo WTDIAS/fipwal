@@ -2,6 +2,7 @@ package br.com.gigalike.veiculos.service;
 
 import br.com.gigalike.veiculos.dto.ProprietarioDto;
 import br.com.gigalike.veiculos.exception.ExceptionBadRequest;
+import br.com.gigalike.veiculos.exception.ExceptionNotFound;
 import br.com.gigalike.veiculos.mapper.ProprietarioMapper;
 import br.com.gigalike.veiculos.model.Proprietario;
 import br.com.gigalike.veiculos.repository.ProprietarioRepository;
@@ -35,5 +36,12 @@ public class ProprietarioService {
     public List<ProprietarioDto> buscaProprietarios() {
         List<Proprietario> proprietarioList =  proprietarioRepository.findTop10By();
         return proprietarioMapper.listToDto(proprietarioList);
+    }
+
+    public void excluir(long id) {
+        if (!proprietarioRepository.existsById(id)){
+            throw new ExceptionNotFound("Não encontrado proprietário com id " + id + " para fazer a exclusão.");
+        }
+        proprietarioRepository.deleteById(id);
     }
 }
