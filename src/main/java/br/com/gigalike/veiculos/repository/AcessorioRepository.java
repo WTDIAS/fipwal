@@ -13,4 +13,6 @@ public interface AcessorioRepository extends JpaRepository<Acessorio,Long> {
             nativeQuery = true
     )
     List<Acessorio> buscaAcessoriosDoVeiculo(long idVeiculo);
+
+    
 }

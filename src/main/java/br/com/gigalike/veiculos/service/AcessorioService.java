@@ -4,12 +4,15 @@ import br.com.gigalike.veiculos.exception.ExceptionBadRequest;
 import br.com.gigalike.veiculos.exception.ExceptionNotFound;
 import br.com.gigalike.veiculos.mapper.AcessorioMapper;
 import br.com.gigalike.veiculos.model.Acessorio;
+import br.com.gigalike.veiculos.model.Veiculo;
 import br.com.gigalike.veiculos.repository.AcessorioRepository;
+import br.com.gigalike.veiculos.repository.VeiculoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -18,6 +21,8 @@ public class AcessorioService {
     private AcessorioRepository acessorioRepository;
     @Autowired
     private AcessorioMapper acessorioMapper;
+    @Autowired
+    private VeiculoRepository veiculoRepository;
 
     public AcessorioDto buscarDtoPorId(long id){
         Acessorio acessorio = acessorioRepository.findById(id).orElseThrow(
@@ -44,9 +49,18 @@ public class AcessorioService {
     }
 
     public void deletaAcessorio(long id) {
-        if (!acessorioRepository.existsById(id)){
-            throw new ExceptionNotFound("Acessório com id: " + id + " não encontrado para exclusão.");
+         //Verifica se existe este acessorio na tabela
+        Acessorio acessorio = acessorioRepository.findById(id).orElseThrow(
+                ()->new ExceptionNotFound("Acessório com id: " + id + " não encontrado para exclusão."));
+
+         //Verifica se existe vinculo entre o Acessorio e veiculo, se existir excluir
+         //primeiro o vinculo com veiculo para depois desativar em Acessorio
+        List<Veiculo>  veiculoList = veiculoRepository.findByAcessoriosId(id);
+        if (veiculoList != null && !veiculoList.isEmpty()){
+            for(Veiculo veiculo : veiculoList){
+                veiculo.getAcessorios().removeIf(a -> a.getId() == id);
+            }
         }
-        acessorioRepository.deleteById(id);
+        acessorio.setAtivo(false);
     }
 }

@@ -30,6 +30,7 @@ public record VeiculoDto(
         String codigoFipe,
         @JsonAlias("Combustivel")
         String combustivel,
+        Boolean ativo,
 
         @JsonAlias("Valor")
         @JsonDeserialize(using = PrecoDeserializer.class)

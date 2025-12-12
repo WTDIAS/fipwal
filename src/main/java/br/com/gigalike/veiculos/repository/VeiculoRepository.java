@@ -9,5 +9,5 @@ public interface VeiculoRepository extends JpaRepository<Veiculo,Long> {
 
     List<Veiculo> findAllByCodigoFipe(@NotNull(message = "O campo código fipe (CodigoFipe) é obrigatório.") String s);
 
-
+    List<Veiculo> findByAcessoriosId(long id);
 }

@@ -36,7 +36,7 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ResponseError> globalException(Exception ex){
         ResponseError responseErrror = new ResponseError(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "Houve um erro interno no servidor. Tente novamente mais tarde. Se o problema persistir informe o administrador.",
+                ex.getMessage(),
                 LocalDateTime.now());
         logger.error("Global Exception: ",ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseErrror);

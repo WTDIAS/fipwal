@@ -15,5 +15,6 @@ public record AcessorioDto(
         String nome,
         String descricao,
         @NotBlank(message = "Informe um nome para acessório.")
-        double preco) {
+        double preco,
+        boolean ativo) {
 }

@@ -6,5 +6,5 @@ package br.com.gigalike.veiculos.dto;
  * @version 1.0 12/2025
  * */
 
-public record DocumentoDto(long id, String renavam) {
+public record DocumentoDto(long id, String renavam, boolean ativo) {
 }
