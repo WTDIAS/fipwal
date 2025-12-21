@@ -1,4 +1,5 @@
-# FIPWAL
+# Em desenvolvimento...
+# FIPWAL API INTEGRATION
 
 Sistema de cadastro e consulta de veículos utilizando a API Fipe
 
@@ -6,7 +7,7 @@ Sistema de cadastro e consulta de veículos utilizando a API Fipe
 
 ## Sobre o Projeto
 
-Este projeto é uma aplicação em Java construída com Spring Boot para cadastrar, consultar e gerenciar informações de veículos, proprietários, documentos e acessórios. Ele se conecta à [API Fipe](https://deividfortuna.github.io/fipe/) para obter dados de veículos como carros, motos e caminhões, permitindo o cadastro local desses dados junto a informações extras no banco.
+Este projeto é uma API de integração construída em Java com Spring Boot para cadastro, consulta e gerenciamento de informações de veículos, proprietários, documentos e acessórios. Esta API se conecta à [API Fipe](https://deividfortuna.github.io/fipe/) para obter dados de veículos como carros, motos e caminhões, permitindo o cadastro local desses dados junto a informações extras no banco.
 
 Principais funcionalidades:
 - Buscar veículos, marcas, modelos e anos diretamente da API Fipe
