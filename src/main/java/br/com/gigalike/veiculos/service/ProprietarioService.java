@@ -5,11 +5,12 @@ import br.com.gigalike.veiculos.exception.ExceptionBadRequest;
 import br.com.gigalike.veiculos.exception.ExceptionNotFound;
 import br.com.gigalike.veiculos.mapper.ProprietarioMapper;
 import br.com.gigalike.veiculos.model.Proprietario;
+import br.com.gigalike.veiculos.model.Veiculo;
 import br.com.gigalike.veiculos.repository.ProprietarioRepository;
+import br.com.gigalike.veiculos.repository.VeiculoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -19,6 +20,8 @@ public class ProprietarioService {
     private ProprietarioRepository proprietarioRepository;
     @Autowired
     private ProprietarioMapper proprietarioMapper;
+    @Autowired
+    private VeiculoRepository veiculoRepository;
 
     public ProprietarioDto salvarProprietario(ProprietarioDto proprietarioDto){
         if (proprietarioDto.nome() == null || proprietarioDto.nome().isEmpty()){
@@ -39,9 +42,12 @@ public class ProprietarioService {
     }
 
     public void excluir(long id) {
-        if (!proprietarioRepository.existsById(id)){
-            throw new ExceptionNotFound("Não encontrado proprietário com id " + id + " para fazer a exclusão.");
+        Proprietario proprietario = proprietarioRepository.findById(id).orElseThrow(
+                ()->new ExceptionNotFound("Não encontrado proprietário com id " + id + " para fazer a exclusão."));
+        Veiculo veiculo = veiculoRepository.findByProprietarioId(id);
+        if (veiculo != null){
+            veiculo.setProprietario(null);
         }
-        proprietarioRepository.deleteById(id);
+        proprietario.setAtivo(false);
     }
 }

@@ -1,7 +1,4 @@
 package br.com.gigalike.veiculos.service;
-
-import br.com.gigalike.veiculos.dto.IdDocumentoRequestDto;
-import br.com.gigalike.veiculos.dto.IdProprietarioRequestDto;
 import br.com.gigalike.veiculos.dto.VeiculoDto;
 import br.com.gigalike.veiculos.exception.ExceptionConflict;
 import br.com.gigalike.veiculos.exception.ExceptionNotFound;
@@ -41,24 +38,18 @@ public class VeiculoService {
 
 
     public VeiculoDto buscaPorId(long id) {
-        Veiculo veiculo = veiculoRepository.findById(id).orElseThrow(() -> new ExceptionNotFound("Veiculo não encontrado!"));
+        Veiculo veiculo = veiculoRepository.findById(id).orElseThrow(()->new ExceptionNotFound("Veiculo não encontrado!"));
         return veiculoMapper.toDto(veiculo);
     }
 
-    public List<VeiculoDto> buscarVeiculos() {
-        List<Veiculo> veiculos = veiculoRepository.findTop10By();
-        if (veiculos.isEmpty()) {
-            throw new ExceptionNotFound("Nenhum veiculo foi encontrado no banco de dados!");
-        }
+    public List<VeiculoDto> buscarVeiculosAtivos() {
+        List<Veiculo> veiculos = veiculoRepository.findTop100ByAtivoTrue();
         return veiculoMapper.listToDto(veiculos);
     }
 
-    public VeiculoDto incluirAcessorioAoVeiculo(Long idVeiculo, Long idAcessorio) {
-        Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(() -> new ExceptionNotFound("Veiculo " + idVeiculo + " não encontrado."));
-        Acessorio acessorio = acessorioRepository.findById(idAcessorio).orElseThrow(() -> new ExceptionNotFound("Acessório " + idAcessorio + " não encontrado."));
-        veiculo.adicionaAcessorio(acessorio);
-        Veiculo veiculoSalvo = veiculoRepository.save(veiculo);
-        return veiculoMapper.toDto(veiculoSalvo);
+    public List<VeiculoDto> buscarVeiculosInativos() {
+        List<Veiculo> veiculos = veiculoRepository.findTop100ByAtivoFalse();
+        return veiculoMapper.listToDto(veiculos);
     }
 
     public VeiculoDto salvarVeiculoNoBd(VeiculoDto veiculoDto) {
@@ -78,6 +69,59 @@ public class VeiculoService {
             throw new ExceptionNotFound("Veículo com ID " + id + " não encontrado para exclusão.");
         }
         veiculoRepository.deleteById(id);
+    }
+
+    public VeiculoDto incluirAcessorioAoVeiculo(Long idVeiculo, Long idAcessorio) {
+        Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(
+                () -> new ExceptionNotFound("Veiculo " + idVeiculo + " não encontrado."));
+
+        Acessorio acessorio = acessorioRepository.findById(idAcessorio).orElseThrow(
+                () -> new ExceptionNotFound("Acessório " + idAcessorio + " não encontrado."));
+
+        if(!acessorio.isAtivo()){
+            throw new ExceptionConflict("Acessório INATIVO, não é possível atribuí-lo ao veículo.");
+        }
+        veiculo.adicionaAcessorio(acessorio);
+        Veiculo veiculoSalvo = veiculoRepository.save(veiculo);
+        return veiculoMapper.toDto(veiculoSalvo);
+    }
+
+    public VeiculoDto incluirProprietario(long idVeiculo, long idProprietario) {
+        Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(
+                () -> new ExceptionNotFound("Não encontrado veiculo com id " + idVeiculo));
+
+        if (veiculo.getProprietario() != null) {
+            throw new ExceptionConflict("Veículo já possui um proprietário cadastrado.");
+        }
+
+        Proprietario proprietario = proprietarioRepository.findById(idProprietario).orElseThrow(
+                () -> new ExceptionNotFound("Não encontrado proprietário com id " + idProprietario));
+
+        if (!proprietario.isAtivo()){
+            throw new ExceptionConflict("Proprietário INATIVO, não foi possível atribuí-lo ao veículo.");
+        }
+
+        veiculo.setProprietario(proprietario);
+        return veiculoMapper.toDto(veiculoRepository.save(veiculo));
+    }
+
+    public VeiculoDto incluirDocumento(Long idVeiculo, long idDocumento ) {
+        Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(
+                () -> new ExceptionNotFound("Não encontrado veiculo com id " + idVeiculo));
+
+        if (veiculo.getDocumento() != null) {
+            throw new ExceptionConflict("Veículo "+idVeiculo+" já possui um documento cadastrado.");
+        }
+
+        Documento documento = documentoRepository.findById(idDocumento).orElseThrow(
+                () -> new ExceptionNotFound("Não encontrado documento com id " + idDocumento));
+
+        if (!documento.isAtivo()){
+            throw new ExceptionConflict("Documento INATIVO, não foi possível atribuí-lo ao veículo.");
+        }
+
+        veiculo.setDocumento(documento);
+        return veiculoMapper.toDto(veiculoRepository.save(veiculo));
     }
 
     //******************** API **********************************
@@ -142,29 +186,6 @@ public class VeiculoService {
 
     }
 
-    public VeiculoDto incluirProprietario(long idVeiculo, long idProprietario) {
-        Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(
-                () -> new ExceptionNotFound("Não encontrado veiculo com id " + idVeiculo));
-        if (veiculo.getProprietario() != null) {
-            throw new ExceptionConflict("Veículo já possui um proprietário cadastrado.");
-        }
-        Proprietario proprietario = proprietarioRepository.findById(idProprietario).orElseThrow(
-                () -> new ExceptionNotFound("Não encontrado proprietário com id " + idProprietario));
-        veiculo.setProprietario(proprietario);
-        return veiculoMapper.toDto(veiculoRepository.save(veiculo));
-    }
-
-    public VeiculoDto incluirDocumento(Long idVeiculo, long idDocumento ) {
-        Veiculo veiculo = veiculoRepository.findById(idVeiculo).orElseThrow(
-                () -> new ExceptionNotFound("Não encontrado veiculo com id " + idVeiculo));
-        if (veiculo.getDocumento() != null) {
-            throw new ExceptionConflict("Veículo "+idVeiculo+" já possui um documento cadastrado.");
-        }
-        Documento documento = documentoRepository.findById(idDocumento).orElseThrow(
-                () -> new ExceptionNotFound("Não encontrado documento com id " + idDocumento));
-        veiculo.setDocumento(documento);
-        return veiculoMapper.toDto(veiculoRepository.save(veiculo));
-    }
 }
 
 

@@ -4,7 +4,9 @@ import br.com.gigalike.veiculos.exception.ExceptionBadRequest;
 import br.com.gigalike.veiculos.exception.ExceptionInternalServerError;
 import br.com.gigalike.veiculos.mapper.DocumentoMapper;
 import br.com.gigalike.veiculos.model.Documento;
+import br.com.gigalike.veiculos.model.Veiculo;
 import br.com.gigalike.veiculos.repository.DocumentoRepository;
+import br.com.gigalike.veiculos.repository.VeiculoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,9 @@ public class DocumentoService {
     private DocumentoRepository documentoRepository;
     @Autowired
     private DocumentoMapper documentoMapper;
+    @Autowired
+    private VeiculoRepository veiculoRepository;
+
 
     public DocumentoDto salvarDocumentoNoBd(DocumentoDto documentoDto){
         Documento documento = documentoMapper.toEntity(documentoDto);
@@ -37,9 +42,12 @@ public class DocumentoService {
     }
 
     public void excluirDocumento(Long id) {
-        if (!documentoRepository.existsById(id)){
-            throw new ExceptionBadRequest("Não encontrado documento com ID igual a "+id);
+        Documento documento = documentoRepository.findById(id).orElseThrow(
+                ()->new ExceptionBadRequest("Não encontrado documento com ID igual a "+id));
+        Veiculo veiculo = veiculoRepository.findByDocumentoId(id);
+        if (veiculo != null){
+            veiculo.setDocumento(null);
         }
-        documentoRepository.deleteById(id);
+        documento.setAtivo(false);
     }
 }

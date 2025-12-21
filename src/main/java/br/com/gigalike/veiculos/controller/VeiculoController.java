@@ -18,8 +18,14 @@ public class VeiculoController {
     private VeiculoService veiculoService;
 
     @GetMapping
-    private ResponseEntity<List<VeiculoDto>> buscarVeiculos(){
-        List<VeiculoDto> veiculoDtoList = veiculoService.buscarVeiculos();
+    private ResponseEntity<List<VeiculoDto>> buscarVeiculosAtivos(){
+        List<VeiculoDto> veiculoDtoList = veiculoService.buscarVeiculosAtivos();
+        return ResponseEntity.ok(veiculoDtoList);
+    }
+
+    @GetMapping("/inativos")
+    private ResponseEntity<List<VeiculoDto>> buscarVeiculosInativos(){
+        List<VeiculoDto> veiculoDtoList = veiculoService.buscarVeiculosInativos();
         return ResponseEntity.ok(veiculoDtoList);
     }
 
@@ -36,7 +42,7 @@ public class VeiculoController {
         return ResponseEntity.created(uri).body(veiculoDtoSalvo);
     }
 
-    @PostMapping("/{id}/acessorio")
+    @PutMapping("/{id}/acessorio")
     public ResponseEntity<VeiculoDto> incluirAcessorioAoVeiculo(@PathVariable Long id, @RequestBody IdAcessorioIdRequestDto idAcessorioIdRequestDto, UriComponentsBuilder uriBuilder){
         VeiculoDto veiculoDto = veiculoService.incluirAcessorioAoVeiculo(id, idAcessorioIdRequestDto.acessorioId());
         var uri = uriBuilder.path("/veiculos/{id}/acessorio").buildAndExpand(veiculoDto.id()).toUri();
