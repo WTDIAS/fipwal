@@ -21,6 +21,13 @@ public class Proprietario {
     @Column(nullable = false)
     private boolean ativo = true;
 
+    public Proprietario(String nome, String telefone, boolean ativo, List<Veiculo> veiculos) {
+        this.nome = nome;
+        this.telefone = telefone;
+        this.ativo = ativo;
+        this.veiculos = veiculos;
+    }
+
     @OneToMany(mappedBy = "proprietario")
     private List<Veiculo> veiculos = new ArrayList<>();
 

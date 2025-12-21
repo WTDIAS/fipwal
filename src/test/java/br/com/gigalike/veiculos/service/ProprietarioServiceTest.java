@@ -2,6 +2,7 @@ package br.com.gigalike.veiculos.service;
 import br.com.gigalike.veiculos.dto.ProprietarioDto;
 import br.com.gigalike.veiculos.exception.ExceptionBadRequest;
 import br.com.gigalike.veiculos.mapper.ProprietarioMapper;
+import br.com.gigalike.veiculos.model.Proprietario;
 import br.com.gigalike.veiculos.repository.ProprietarioRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -26,10 +29,10 @@ class ProprietarioServiceTest {
     @Test
     void deveSalvarProprietarioNoBancoDeDados() {
         //ARRANGE
-        /*Proprietario proprietarioSemId = new Proprietario("nome","123456789");
-        Proprietario proprietarioComId = new Proprietario(1L,"Nome","123456789");
-        ProprietarioDto proprietarioDtoSemId = new ProprietarioDto(null,"Nome","123456789");
-        ProprietarioDto proprietarioDtoComId = new ProprietarioDto(1L,"Nome","123456789");
+        Proprietario proprietarioSemId = new Proprietario("Nome","123456789",true, null);
+        Proprietario proprietarioComId = new Proprietario(1l,"Nome","123456789",true, null);
+        ProprietarioDto proprietarioDtoSemId = new ProprietarioDto(null,"Nome","123456789", true);
+        ProprietarioDto proprietarioDtoComId = new ProprietarioDto(1L,"Nome","123456789",true);
 
         when(proprietarioMapper.toEntity(proprietarioDtoSemId)).thenReturn(proprietarioSemId);
         when(proprietarioRepository.save(proprietarioSemId)).thenReturn(proprietarioComId);
@@ -44,14 +47,14 @@ class ProprietarioServiceTest {
 
         verify(proprietarioRepository,times(1)).save(proprietarioSemId);
         verify(proprietarioMapper,times(1)).toDto(proprietarioComId);
-        verify(proprietarioMapper,times(1)).toEntity(proprietarioDtoSemId);*/
+        verify(proprietarioMapper,times(1)).toEntity(proprietarioDtoSemId);
     }
 
 
     @Test
     void deveRetornarCodigo400QuandoNomeProprietarioForVazio(){
         //ARRANGE
-        ProprietarioDto proprietarioDtoInvalido = new ProprietarioDto(null,"","123456789");
+        ProprietarioDto proprietarioDtoInvalido = new ProprietarioDto(null,"","123456789", true);
         //ACT
         ExceptionBadRequest excecao = assertThrows(ExceptionBadRequest.class,() -> proprietarioService.salvarProprietario(proprietarioDtoInvalido));
         //ASSERT
@@ -64,7 +67,7 @@ class ProprietarioServiceTest {
     @Test
     void deveRetornarCodigo400QuandoNomeProprietarioForNulo(){
         //ARRANGE
-        ProprietarioDto proprietarioDtoInvalido = new ProprietarioDto(null,null,"123456789");
+        ProprietarioDto proprietarioDtoInvalido = new ProprietarioDto(null,null,"123456789", true);
         //ACT & ASSERT
         ExceptionBadRequest excecao = assertThrows(ExceptionBadRequest.class,() -> proprietarioService.salvarProprietario(proprietarioDtoInvalido));
         assertEquals("Informe um nome para o proprietário.", excecao.getMessage());
@@ -77,8 +80,8 @@ class ProprietarioServiceTest {
     @DisplayName("Deve retornar um proprietário ao buscar por um ID válido.")
     void deveRetornarUmProprietarioPorId() {
         //ARRANGE
-        /*Proprietario proprietario = new Proprietario(1L,"Nome","123456789");
-        ProprietarioDto proprietarioDto = new ProprietarioDto(1L,"Nome","123456789");
+        Proprietario proprietario = new Proprietario(1L,"Nome","123456789",true,null);
+        ProprietarioDto proprietarioDto = new ProprietarioDto(1L,"Nome","123456789",true);
         Long id = 1L;
         when(proprietarioRepository.findById(id)).thenReturn(Optional.of(proprietario));
         when(proprietarioMapper.toDto(proprietario)).thenReturn(proprietarioDto);
@@ -90,7 +93,7 @@ class ProprietarioServiceTest {
         assertNotNull(proprietarioDtoResultado,"O resultado da busca não deve ser nulo.");
         assertEquals(proprietarioDtoResultado,proprietarioDto);
         verify(proprietarioRepository,times(1)).findById(id);
-        verify(proprietarioMapper,times(1)).toDto(proprietario);*/
+        verify(proprietarioMapper,times(1)).toDto(proprietario);
 
     }
 
@@ -113,12 +116,12 @@ class ProprietarioServiceTest {
     @DisplayName("Deve retornar uma lista com alguns proprietarios cadastrados no banco de dados")
     void deveRetornarListaComProprietarios(){
         //ARRANGE
-        /*Proprietario proprietario1 = new Proprietario(1L,"Proprietario1","123456789");
-        Proprietario proprietario2 = new Proprietario(2L,"Proprietario2","559491847");
+        Proprietario proprietario1 = new Proprietario(1L,"Proprietario1","123456789",true,null);
+        Proprietario proprietario2 = new Proprietario(2L,"Proprietario2","559491847",true,null);
         List<Proprietario> proprietarioList = List.of(proprietario1,proprietario2);
 
-        ProprietarioDto proprietarioDto1 = new ProprietarioDto(1L,"proprietarioDto1","123456789");
-        ProprietarioDto proprietarioDto2 = new ProprietarioDto(2L,"proprietarioDto2","559491847");
+        ProprietarioDto proprietarioDto1 = new ProprietarioDto(1L,"proprietarioDto1","123456789",true);
+        ProprietarioDto proprietarioDto2 = new ProprietarioDto(2L,"proprietarioDto2","559491847",true);
         List<ProprietarioDto> proprietarioDtoList = List.of(proprietarioDto1,proprietarioDto2);
 
         when(proprietarioRepository.findTop10By()).thenReturn(proprietarioList);
@@ -130,7 +133,7 @@ class ProprietarioServiceTest {
         //ASSERT
         assertEquals(resultadoList,proprietarioDtoList);
         verify(proprietarioRepository,times(1)).findTop10By();
-        verify(proprietarioMapper,times(1)).listToDto(proprietarioList);*/
+        verify(proprietarioMapper,times(1)).listToDto(proprietarioList);
 
     }
 }

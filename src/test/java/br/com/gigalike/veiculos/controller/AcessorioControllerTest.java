@@ -29,7 +29,7 @@ public class AcessorioControllerTest {
     @DisplayName("Deve retornar o acessório quando buscar por ID existente")
     void deveRetornarUmAcessorioBuscadoPeloId() throws Exception {
         //ARRANGE
-        AcessorioDto acessorioDto = new AcessorioDto(1L,"ar condicionado","descrição 1",550.50);
+        AcessorioDto acessorioDto = new AcessorioDto(1L,"ar condicionado","descrição 1",550.50, true);
         when(acessorioService.buscarDtoPorId(1L)).thenReturn(acessorioDto);
         long idValido = 1L;
         //ACT+ASSERT
@@ -56,8 +56,8 @@ public class AcessorioControllerTest {
     @Test
     @DisplayName("Deve retornar uma lista com alguns acessórios cadastrados no banco.")
     void deveRetornarListaComAcessorios() throws Exception {
-        AcessorioDto acessorioDto1 = new AcessorioDto(1L,"Acessorio1","Descrição1",1.00);
-        AcessorioDto acessorioDto2 = new AcessorioDto(2L,"Acessorio2","Descrição2",2.00);
+        AcessorioDto acessorioDto1 = new AcessorioDto(1L,"Acessorio1","Descrição1",1.00, true);
+        AcessorioDto acessorioDto2 = new AcessorioDto(2L,"Acessorio2","Descrição2",2.00, true);
 
         when(acessorioService.buscarAcessorios()).thenReturn(List.of(acessorioDto1,acessorioDto2));
 
@@ -82,7 +82,7 @@ public class AcessorioControllerTest {
     @Test
     @DisplayName("Deve retornar um AcessorioDto com ID após salvar no banco de dados")
     void deveRetornarUmAcessorioDtoComIdAposSalvar() throws Exception {
-        AcessorioDto acessorioDto = new AcessorioDto(1L,"Acessorio","Descrição",1.00);
+        AcessorioDto acessorioDto = new AcessorioDto(1L,"Acessorio","Descrição",1.00, true);
 
         when(acessorioService.salvarAcessorioNoBd(any(AcessorioDto.class))).thenReturn(acessorioDto);
 
