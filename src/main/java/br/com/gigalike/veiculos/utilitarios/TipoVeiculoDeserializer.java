@@ -1,4 +1,4 @@
-package br.com.gigalike.veiculos.utils;
+package br.com.gigalike.veiculos.utilitarios;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;

@@ -1,6 +1,6 @@
 package br.com.gigalike.veiculos.dto;
 import br.com.gigalike.veiculos.utilitarios.PrecoDeserializer;
-import br.com.gigalike.veiculos.utils.TipoVeiculoDeserializer;
+import br.com.gigalike.veiculos.utilitarios.TipoVeiculoDeserializer;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

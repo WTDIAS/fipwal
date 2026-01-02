@@ -10,7 +10,7 @@ import br.com.gigalike.veiculos.repository.ProprietarioRepository;
 import br.com.gigalike.veiculos.repository.VeiculoRepository;
 import br.com.gigalike.veiculos.utilitarios.ConverterJsonParaVeiculo;
 import br.com.gigalike.veiculos.utilitarios.FipeUrlBuilder;
-import br.com.gigalike.veiculos.utils.ClienteHttp;
+import br.com.gigalike.veiculos.utilitarios.ClienteHttp;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

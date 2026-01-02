@@ -1,4 +1,4 @@
-package br.com.gigalike.veiculos.utils;
+package br.com.gigalike.veiculos.utilitarios;
 import br.com.gigalike.veiculos.exception.ExceptionNotFound;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
